@@ -4,7 +4,7 @@ import db from "./models/index.js"
 
 dotenv.config()
 const HOST = process.env.HOST
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8000
 const MONGO_URL = process.env.MONGO_URL
 const app = express()
 
