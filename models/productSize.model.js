@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const productSizeSchema = mongoose.Schema({
     productId: {
@@ -15,5 +15,4 @@ const productSizeSchema = mongoose.Schema({
     },
 });
 
-const ProductSize = mongoose.model('productSizes', productSizeSchema);
-export default ProductSize;
+module.exports = mongoose.model('productSizes', productSizeSchema)

@@ -1,10 +1,10 @@
-import express from 'express';
-import { findAll } from '../controllers/product.controller.js';
+module.exports = (app) => {
+    const products = require('../controllers/product.controller')
 
-const router = express.Router();
-// index
-router.get('/', findAll);
+    const router = require('express').Router()
 
-export default function setupProductRoutes(app) {
-    app.use('/api/products', router);
+    // index
+    router.get('/', products.findAll)
+
+    app.use('/api/products', router)
 }

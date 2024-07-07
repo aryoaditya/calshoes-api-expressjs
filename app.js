@@ -1,13 +1,14 @@
-import express from "express"
-import dotenv from "dotenv"
-import db from "./models/index.js"
-import setupProductRoutes from "./routes/product.routes.js"
-
+const express = require('express')
+const dotenv = require('dotenv')
+const db = require('./models')
 dotenv.config()
 const HOST = process.env.HOST
 const PORT = process.env.PORT || 8000
 const MONGO_URL = process.env.MONGO_URL
 const app = express()
+
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
 db.mongoose
     .connect(MONGO_URL)
@@ -17,13 +18,13 @@ db.mongoose
         console.log("Connection failed!", err)
     });
 
-setupProductRoutes(app)
-
 app.get('/', (req, res) => {
     res.json({
         "message": "Hello World"
     })
 })
+
+require('./routes/product.routes')(app)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${HOST}:${PORT}`)

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 const productSchema = mongoose.Schema(
     {
@@ -37,5 +37,4 @@ const productSchema = mongoose.Schema(
     { timestamps: true }
 );
 
-const Product = mongoose.model('products', productSchema);
-export default Product;
+module.exports = mongoose.model('products', productSchema)
