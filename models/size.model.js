@@ -1,10 +1,11 @@
-const mongoose = require('mongoose')
-
-const sizeSchema = mongoose.Schema({
-    sizeNumber: {
-        type: Number,
-        required: true
-    }
-});
-
-module.exports = mongoose.model('sizes', sizeSchema)
+module.exports = mongoose => {
+    const sizeSchema = mongoose.Schema({
+        sizeNumber: {
+            type: Number,
+            required: true
+        }
+    });
+    
+    const Size = mongoose.model('sizes', sizeSchema)
+    return Size
+}

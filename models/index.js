@@ -1,8 +1,7 @@
 const dotenv = require('dotenv')
-const mongoose = require('mongoose')
-
 dotenv.config()
 const MONGO_URL = process.env.MONGO_URL
+const mongoose = require('mongoose')
 
 mongoose.Promise = global.Promise
 
@@ -11,12 +10,12 @@ db.mongoose = mongoose
 db.url = MONGO_URL
 
 // Import model schemas and assign to db object
-db.users = require("./user.model.js")(mongoose)
-db.categories = require("./category.model.js")(mongoose)
-db.orders = require("./order.model.js")(mongoose)
-db.orderItems = require("./orderItem.model.js")(mongoose)
-db.products = require("./product.model.js")(mongoose)
-db.productSizes = require("./productSize.model.js")(mongoose)
-db.sizes = require("./size.model.js")(mongoose)
+db.users = require("./user.model")(mongoose)
+db.categories = require("./category.model")(mongoose)
+db.orders = require("./order.model")(mongoose)
+db.orderItems = require("./orderItem.model")(mongoose)
+db.products = require('./product.model')(mongoose)
+db.productSizes = require("./productSize.model")(mongoose)
+db.sizes = require("./size.model")(mongoose)
 
 module.exports = db
