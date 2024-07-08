@@ -1,40 +1,40 @@
 const db = require('../models')
 const Product = db.products
 
-exports.findAll = (req, res) => {
-    Product.find()
-    .then((result) => {
+exports.findAll = async (req, res) => {
+    try {
+        const result = await Product.find()
         res.status(200).send({
             success: true,
             data: result
         })
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send({
             success: false,
             message:
                 err.message || "Some error while retrieving products."
-        })
-    })
+        }) 
+    }
 }
 
-exports.findOne = (req, res) => {
-    Product.findOne({
-        _id: req.params.id
-    })
-    .then((result) => {
+exports.findOne = async (req, res) => {
+    try {
+        const result = await Product.findOne({
+            _id: req.params.id
+        })
         res.status(200).send({
             success: true,
             data: result
         })
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send({
             success: false,
             message: err.message || "Some error while retrieving product."
         })
-    })
+    }
 }
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     const product = new Product({
         name: req.body.name,
         description: req.body.description,
@@ -44,25 +44,25 @@ exports.create = (req, res) => {
         category_id: req.body.category_id,
     })
 
-    product.save()
-    .then((result) => {
+    try{
+        const result = await product.save()
         res.status(200).send({
             success: true,
             message: 'Product added successfully',
             data: result
         })
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send({
             success: false,
             message: err.message || "Some error occurred while creating the product."
         })
-    })
+    }
 }
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id
-    Product.findByIdAndUpdate(id, req.body, { useFindAndModify: false, new: true })
-    .then((result) => {
+    try{
+        const result = await Product.findByIdAndUpdate(id, req.body, { useFindAndModify: false, new: true })
         if (!result) {
             return res.status(404).send({
                 success: false,
@@ -74,18 +74,18 @@ exports.update = (req, res) => {
             message: 'Product updated successfully',
             data: result
         })
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send({
             success: false,
             message: err.message || "Some error occurred while updating the product."
         })
-    })
+    }
 }
 
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     const id = req.params.id
-    Product.findByIdAndDelete(id, { useFindAndModify: false })
-    .then((result) => {
+    try{
+        const result = await Product.findByIdAndDelete(id, { useFindAndModify: false })
         if (!result) {
             return res.status(404).send({
                 success: false,
@@ -97,10 +97,10 @@ exports.delete = (req, res) => {
             message: "Product was deleted successfully",
             data: result
         })
-    }).catch((err) => {
+    } catch (err) {
         res.status(500).send({
             success: false,
             message: err.message || "Some error occurred while deleting the product."
         })
-    })
+    }
 }
