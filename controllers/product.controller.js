@@ -1,36 +1,30 @@
 const db = require('../models')
+const { 
+    responseSuccessHandler, 
+    responseErrorHandler, 
+    responseNotFoundHandler, 
+    responseValidationErrorsHandler 
+} = require('../utils/responseHandler')
 const Product = db.products
 
 exports.findAll = async (req, res) => {
     try {
         const result = await Product.find()
-        res.status(200).send({
-            success: true,
-            data: result
-        })
+        responseSuccessHandler(res, result)
     } catch (err) {
-        res.status(500).send({
-            success: false,
-            message:
-                err.message || "Some error while retrieving products."
-        }) 
+        responseErrorHandler(res, 500, err.message)
     }
 }
 
 exports.findOne = async (req, res) => {
     try {
-        const result = await Product.findOne({
-            _id: req.params.id
-        })
-        res.status(200).send({
-            success: true,
-            data: result
-        })
+        const result = await Product.findById(req.params.id)
+        if (!result) {
+            return responseNotFoundHandler(res, "Product not found with id " + req.params.id)
+        }
+        responseSuccessHandler(res, result)
     } catch (err) {
-        res.status(500).send({
-            success: false,
-            message: err.message || "Some error while retrieving product."
-        })
+        responseErrorHandler(res, 500, err.message)
     }
 }
 
@@ -46,16 +40,14 @@ exports.create = async (req, res) => {
 
     try{
         const result = await product.save()
-        res.status(200).send({
-            success: true,
-            message: 'Product added successfully',
-            data: result
-        })
+        responseSuccessHandler(res, result, 'Product added successfully')
     } catch (err) {
-        res.status(500).send({
-            success: false,
-            message: err.message || "Some error occurred while creating the product."
-        })
+        if (err.name === 'ValidationError') {
+            responseValidationErrorsHandler(res, err.message)
+            
+        } else {
+            responseErrorHandler(res, 500, err.message)
+        }
     }
 }
 
@@ -64,21 +56,16 @@ exports.update = async (req, res) => {
     try{
         const result = await Product.findByIdAndUpdate(id, req.body, { useFindAndModify: false, new: true })
         if (!result) {
-            return res.status(404).send({
-                success: false,
-                message: "Product not found with id " + id
-            })
+            return responseNotFoundHandler(res, "Product not found with id " + id)
         }
-        res.status(200).send({
-            success: true,
-            message: 'Product updated successfully',
-            data: result
-        })
+        responseSuccessHandler(res, result, 'Product updated successfully')
+        
     } catch (err) {
-        res.status(500).send({
-            success: false,
-            message: err.message || "Some error occurred while updating the product."
-        })
+        if (err.name === 'ValidationError') {
+            responseValidationErrorsHandler(res, err.message)
+        } else {
+            responseErrorHandler(res, 500, err.message)
+        }
     }
 }
 
@@ -87,20 +74,10 @@ exports.delete = async (req, res) => {
     try{
         const result = await Product.findByIdAndDelete(id, { useFindAndModify: false })
         if (!result) {
-            return res.status(404).send({
-                success: false,
-                message: "Product not found with id " + id
-            })
+            return responseNotFoundHandler(res, "Product not found with id " + id)
         }
-        res.status(200).send({
-            success: true,
-            message: "Product was deleted successfully",
-            data: result
-        })
+        responseSuccessHandler(res, result, "Product was deleted successfully")
     } catch (err) {
-        res.status(500).send({
-            success: false,
-            message: err.message || "Some error occurred while deleting the product."
-        })
+        responseErrorHandler(res, 500, err.message)
     }
 }
