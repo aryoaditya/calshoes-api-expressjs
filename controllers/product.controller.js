@@ -1,18 +1,17 @@
 const db = require('../models')
 const { 
-    responseSuccessHandler, 
-    responseErrorHandler, 
-    responseNotFoundHandler, 
-    responseValidationErrorHandler 
+    successResponse, 
+    serverErrorResponse, 
+    clientErrorResponse
 } = require('../utils/responseHandler')
 const Product = db.products
 
 exports.findAll = async (req, res) => {
     try {
         const result = await Product.find()
-        responseSuccessHandler(res, result, 'Successfully retrieved products')
+        successResponse(res, result, "Successfully retrieved products")
     } catch (err) {
-        responseErrorHandler(res, 500, err.message)
+        serverErrorResponse(res, err.message)
     }
 }
 
@@ -20,11 +19,11 @@ exports.findOne = async (req, res) => {
     try {
         const result = await Product.findById(req.params.id)
         if (!result) {
-            return responseNotFoundHandler(res, 'Product not found with id: ' + req.params.id)
+            return clientErrorResponse(res, "Product not found with id: " + req.params.id, 404)
         }
-        responseSuccessHandler(res, result, 'Successfully retrieved product with id: ' + req.params.id)
+        successResponse(res, result, "Successfully retrieved product with id: " + req.params.id)
     } catch (err) {
-        responseErrorHandler(res, 500, err.message)
+        serverErrorResponse(res, err.message)
     }
 }
 
@@ -40,13 +39,13 @@ exports.create = async (req, res) => {
         })
 
         const result = await product.save()
-        responseSuccessHandler(res, result, 'Product added successfully')
+        successResponse(res, result, "Product added successfully", 201)
     } catch (err) {
-        if (err.name === 'ValidationError') {
-            responseValidationErrorHandler(res, err.message)
+        if (err.name === "ValidationError") {
+            clientErrorResponse(res, err.message)
             
         } else {
-            responseErrorHandler(res, 500, err.message)
+            serverErrorResponse(res, err.message)
         }
     }
 }
@@ -56,15 +55,15 @@ exports.update = async (req, res) => {
         const id = req.params.id
         const result = await Product.findByIdAndUpdate(id, req.body, { useFindAndModify: false, new: true })
         if (!result) {
-            return responseNotFoundHandler(res, "Product not found with id: " + id)
+            return clientErrorResponse(res, "Product not found with id: " + id, 404)
         }
-        responseSuccessHandler(res, result, 'Product updated successfully')
+        successResponse(res, result, "Product updated successfully")
         
     } catch (err) {
-        if (err.name === 'ValidationError') {
-            responseValidationErrorHandler(res, err.message)
+        if (err.name === "ValidationError") {
+            clientErrorResponse(res, err.message)
         } else {
-            responseErrorHandler(res, 500, err.message)
+            serverErrorResponse(res, err.message)
         }
     }
 }
@@ -74,10 +73,10 @@ exports.delete = async (req, res) => {
         const id = req.params.id
         const result = await Product.findByIdAndDelete(id, { useFindAndModify: false })
         if (!result) {
-            return responseNotFoundHandler(res, "Product not found with id: " + id)
+            return clientErrorResponse(res, "Product not found with id: " + id, 404)
         }
-        responseSuccessHandler(res, result, "Product was deleted successfully")
+        successResponse(res, result, "Product was deleted successfully")
     } catch (err) {
-        responseErrorHandler(res, 500, err.message)
+        serverErrorResponse(res, err.message)
     }
 }

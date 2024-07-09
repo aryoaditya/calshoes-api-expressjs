@@ -9,7 +9,8 @@ module.exports = mongoose => {
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         },
         password: {
             type: String,
@@ -17,19 +18,20 @@ module.exports = mongoose => {
         },
         phone: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         },
         isAdmin: {
             type: Boolean,
             default: false
         },
-        createdDate: {
+        createdAt: {
             type: Date,
-            default: ''
+            default: Date.now
         },
-        updatedDate: {
+        updatedAt: {
             type: Date,
-            default: ''
+            default: Date.now
         }
     },{
         timestamps: true
