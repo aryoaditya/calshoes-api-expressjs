@@ -3,7 +3,7 @@ const {
     responseSuccessHandler, 
     responseErrorHandler, 
     responseNotFoundHandler, 
-    responseValidationErrorsHandler 
+    responseValidationErrorHandler 
 } = require('../utils/responseHandler')
 const Product = db.products
 
@@ -43,7 +43,7 @@ exports.create = async (req, res) => {
         responseSuccessHandler(res, result, 'Product added successfully')
     } catch (err) {
         if (err.name === 'ValidationError') {
-            responseValidationErrorsHandler(res, err.message)
+            responseValidationErrorHandler(res, err.message)
             
         } else {
             responseErrorHandler(res, 500, err.message)
@@ -62,7 +62,7 @@ exports.update = async (req, res) => {
         
     } catch (err) {
         if (err.name === 'ValidationError') {
-            responseValidationErrorsHandler(res, err.message)
+            responseValidationErrorHandler(res, err.message)
         } else {
             responseErrorHandler(res, 500, err.message)
         }

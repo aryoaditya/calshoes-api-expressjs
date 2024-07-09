@@ -22,7 +22,7 @@ exports.responseNotFoundHandler = (res, message = "Not Found") => {
     })
 }
 
-exports.responseValidationErrorsHandler = (res, message = "Validation Error") => {
+exports.responseValidationErrorHandler = (res, message = "Validation Error") => {
     res.status(400).send({
         success: false,
         message: message
