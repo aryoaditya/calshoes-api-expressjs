@@ -14,6 +14,6 @@ module.exports = mongoose => {
         },
     });
     
-    const ProductSize = mongoose.model('productSizes', productSizeSchema)
+    const ProductSize = mongoose.model('product_sizes', productSizeSchema)
     return ProductSize
 }

@@ -7,8 +7,12 @@ module.exports = mongoose => {
         productSizeId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true
+        },
+        price:{
+            type: Number,
+            required: true
         }
     });
-    const OrderItem = mongoose.model('orderItems', orderItemSchema)
+    const OrderItem = mongoose.model('order_items', orderItemSchema)
     return OrderItem
 }

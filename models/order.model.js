@@ -1,10 +1,13 @@
 module.exports = mongoose => {
     const orderSchema = mongoose.Schema({
-        orderItems : [{
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'OrderItem',
+            required: true
+        },
+        cartId: {
+            type: mongoose.Schema.Types.ObjectId,
             required: true,
-        }],
+        },
         shippingAddress: {
             type: String
         },
@@ -20,13 +23,6 @@ module.exports = mongoose => {
             type: String,
             required: true,
             default: 'Pending'
-        },
-        totalPrice: {
-            type: Number
-        },
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
         },
         createdDate: {
             type: Date,
