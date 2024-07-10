@@ -48,11 +48,11 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const id = req.params.id
-        const category = await Product.findByIdAndUpdate(id, req.body, { useFindAndModify: false, new: true })
+        const category = await Category.findByIdAndUpdate(id, req.body, { useFindAndModify: false, new: true })
         if (!category) {
             return clientErrorResponse(res, "Category not found with id: " + id, 404)
         }
-        successResponse(res, category, "Product updated successfully")
+        successResponse(res, category, "Category updated successfully")
     } catch (err) {
         if (err.name === "ValidationError") {
             clientErrorResponse(res, err.message)
@@ -65,7 +65,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const id = req.params.id
-        const result = await Product.findByIdAndDelete(id, { useFindAndModify: false })
+        const result = await Category.findByIdAndDelete(id, { useFindAndModify: false })
         if (!result) {
             return clientErrorResponse(res, "Category not found with id: " + id, 404)
         }
