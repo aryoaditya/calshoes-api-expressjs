@@ -4,8 +4,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = process.env.JWT_SECRET
-const { 
-    successResponse, 
+const {
     serverErrorResponse, 
     clientErrorResponse
 } = require('../utils/responseHandler')
@@ -26,9 +25,7 @@ exports.verifyToken = (req, res, next) => {
 
 exports.verifyAdmin = async (req, res, next) => {
     try {
-        console.log(req.userId)
         const user = await User.findById(req.userId)
-        console.log(user)
         if (!user) {
             return clientErrorResponse(res, 'User not found', 404)
         }

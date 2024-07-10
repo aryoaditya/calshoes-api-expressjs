@@ -1,5 +1,5 @@
 module.exports = mongoose => {
-    const orderItemSchema = mongoose.Schema({
+    const cartItemSchema = mongoose.Schema({
         quantity: {
             type: Number,
             required: true
@@ -13,6 +13,6 @@ module.exports = mongoose => {
             required: true
         }
     });
-    const OrderItem = mongoose.model('order_items', orderItemSchema)
-    return OrderItem
+    const CartItem = mongoose.model('cart_items', cartItemSchema)
+    return CartItem
 }

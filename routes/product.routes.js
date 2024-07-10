@@ -4,21 +4,24 @@ const authMiddleware = require('../middlewares/auth.middleware')
 
 module.exports = (app) => {
     // index
-    router.get('/', authMiddleware.verifyToken, authMiddleware.verifyAdmin, products.findAll)
+    router.get('/', authMiddleware.verifyToken, products.findAll)
     router.get('/:id', products.findOne)
     router.post(
         '/', 
         authMiddleware.verifyToken,
+        authMiddleware.verifyAdmin,
         products.create
     )
     router.put(
         '/:id',
         authMiddleware.verifyToken,
+        authMiddleware.verifyAdmin,
         products.update
     )
     router.delete(
         '/:id',
         authMiddleware.verifyToken,
+        authMiddleware.verifyAdmin,
         products.delete
     )
 
