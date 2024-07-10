@@ -29,6 +29,7 @@ require('./routes/auth.routes')(app)
 require('./routes/order.routes')(app)
 require('./routes/category.routes')(app)
 require('./routes/size.routes')(app)
+require('./routes/productSize.routes')(app)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${HOST}:${PORT}`)
