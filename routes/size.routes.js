@@ -5,7 +5,7 @@ module.exports = (app) => {
 
     app.get('/', auth.verifyToken, auth.verifyAdmin, size.getAll)
     app.get('/:id', auth.verifyToken, auth.verifyAdmin, size.getById)
-    app.create('/', auth.verifyToken, auth.verifyAdmin, size.create)
+    app.post('/', auth.verifyToken, auth.verifyAdmin, size.create)
     app.put('/:id', auth.verifyToken, auth.verifyAdmin, size.update)
     app.delete('/:id', auth.verifyToken, auth.verifyAdmin, size.delete)
 
