@@ -1,5 +1,5 @@
 const db = require('../models')
-const Category = require('../models/category.model')
+const Category = db.categories
 const {
     successResponse,
     serverErrorResponse,
