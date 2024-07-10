@@ -106,3 +106,91 @@ exports.removeCartItem = async (req, res) => {
         serverErrorResponse(res, err.message)
     }
 }
+
+exports.incrementQuantity = async (req, res) => {
+    try {
+        const { itemId } = req.params
+
+        let cartItem = await CartItem.findById(itemId)
+        if (!cartItem) {
+            return clientErrorResponse(res, 'Cart item not found', 404)
+        }
+
+        // Retrieve product size information
+        const productSize = await ProductSize.findById(cartItem.productSizeId)
+        if (!productSize) {
+            return clientErrorResponse(res, 'Product size not found', 404)
+        }
+        
+        // Retrieve product information based on productSize
+        const product = await Product.findById(productSize.productId)
+        if (!product) {
+            return clientErrorResponse(res, 'Product not found', 404)
+        }
+
+        const cart = await Cart.findOne({ userId : req.userId })
+
+        cartItem.quantity += 1
+        cartItem.price += product.price
+        cart.totalPrice += product.price
+        cartItem = await cartItem.save()
+        await cart.save()
+
+        successResponse(res, cartItem, 'Quantity incremented successfully')
+    } catch (err) {
+        serverErrorResponse(res, err.message)
+    }
+}
+
+exports.decrementQuantity = async (req, res) => {
+    try {
+        const { itemId } = req.params
+
+        let cartItem = await CartItem.findById(itemId)
+        if (!cartItem) {
+            return clientErrorResponse(res, 'Cart item not found', 404)
+        }
+        
+        if (cartItem.quantity > 1) {
+            // Retrieve product size information
+            const productSize = await ProductSize.findById(cartItem.productSizeId)
+            if (!productSize) {
+                return clientErrorResponse(res, 'Product size not found', 404)
+            }
+            
+            // Retrieve product information based on productSize
+            const product = await Product.findById(productSize.productId)
+            if (!product) {
+                return clientErrorResponse(res, 'Product not found', 404)
+            }
+
+            const cart = await Cart.findOne({ userId : req.userId })
+            
+            cartItem.quantity -= 1
+            cartItem.price -= product.price
+            cart.totalPrice -= product.price
+            cartItem = await cartItem.save()
+            await cart.save()
+
+            successResponse(res, cartItem, 'Quantity decremented successfully')
+        } else {
+            const cart = await Cart.findOneAndUpdate(
+                { userId: req.userId },
+                {
+                    $pull: { cartItems: itemId },
+                    $inc: { totalPrice: -cartItem.price }
+                },
+                { new: true }
+            ).populate('cartItems')
+            if (!cart) {
+                return clientErrorResponse(res, 'Cart not found', 404)
+            }
+
+            await CartItem.findByIdAndDelete(itemId)
+
+            successResponse(res, null, 'Item removed from cart successfully')
+        }
+    } catch (err) {
+        serverErrorResponse(res, err.message)
+    }
+}
