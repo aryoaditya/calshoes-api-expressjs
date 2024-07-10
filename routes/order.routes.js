@@ -5,6 +5,8 @@ module.exports = (app) => {
     const router = require('express').Router()
 
     router.post('/add', auth.verifyToken, order.addToCart)
+    router.get('/', auth.verifyToken, order.getCart)
+    router.delete('/:itemId', auth.verifyToken, order.removeCartItem)
 
     app.use('/api/cart', router)
 }

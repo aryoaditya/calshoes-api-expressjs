@@ -7,14 +7,26 @@ const {
     successResponse,
     serverErrorResponse,
     clientErrorResponse
- } = require('../utils/responseHandler')
+} = require('../utils/responseHandler')
+
+exports.getCart = async (req, res) => {
+    try{
+        const cart = await Cart.findOne({userId: req.userId}).populate('cartItems')
+        if (!cart) {
+            return clientErrorResponse(res, "No items found", 404)
+        }
+        successResponse(res, cart)
+    } catch (err) {
+        serverErrorResponse(res, err.message)
+    }
+}
 
 exports.addToCart = async(req, res) => {
     try {
         const { productSizeId, quantity } = req.body
 
         // Check if user has a cart
-        let cart = await Cart.findOne({ userId: req.userId })
+        let cart = await Cart.findOne({ userId: req.userId }).populate('cartItems')
         if(!cart) {
             cart = new Cart({
                 userId: req.userId,
@@ -57,6 +69,39 @@ exports.addToCart = async(req, res) => {
         const result = await cartItem.save()
 
         successResponse(res, result, "Added item successfully")
+    } catch (err) {
+        serverErrorResponse(res, err.message)
+    }
+}
+
+exports.removeCartItem = async (req, res) => {
+    try {
+        const { itemId } = req.params
+        
+        // Check if cart item exists
+        const cartItem = await CartItem.findById(itemId)
+        if (!cartItem) {
+            return clientErrorResponse(res, 'Cart item not found', 404)
+        }
+
+        // Find the user's cart and update the total price
+        const cart = await Cart.findOneAndUpdate(
+            { userId: req.userId },
+            {
+                $pull: { cartItems: itemId },
+                $inc: { totalPrice: -cartItem.price }
+            },
+            { new: true }
+        ).populate('cartItems')
+
+        if (!cart) {
+            return clientErrorResponse(res, 'Cart not found', 404)
+        }
+
+        // Delete the cart item
+        await CartItem.findByIdAndDelete(itemId)
+
+        successResponse(res, cart, 'Cart item removed successfully')
     } catch (err) {
         serverErrorResponse(res, err.message)
     }
