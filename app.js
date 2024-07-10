@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
 require('./routes/product.routes')(app)
 require('./routes/auth.routes')(app)
 require('./routes/order.routes')(app)
+require('./routes/category.routes')(app)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${HOST}:${PORT}`)
