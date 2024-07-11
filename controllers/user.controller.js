@@ -1,15 +1,16 @@
 const User = require('../models').users
 const { successResponse, clientErrorResponse, serverErrorResponse } = require('../utils/responseHandler')
+const bcrypt = require('bcrypt')
 
 exports.updateProfile = async (req, res) => {
     try {
-        const { firstName, lastName, phoneNumber } = req.body
+        const { firstName, lastName, phone } = req.body
         const userId = req.userId
     
         const updatedUser = await User.findByIdAndUpdate(userId, {
           firstName,
           lastName,
-          phoneNumber,
+          phone,
         }, { new: true })
     
         if (!updatedUser) {
