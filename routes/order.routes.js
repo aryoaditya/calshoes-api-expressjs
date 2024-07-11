@@ -9,6 +9,8 @@ module.exports = (app) => {
     router.delete('/:itemId', auth.verifyToken, order.removeCartItem)
     router.put('/:itemId/increment', auth.verifyToken, order.incrementQuantity)
     router.put('/:itemId/decrement', auth.verifyToken, order.decrementQuantity)
+    router.post('/order', auth.verifyToken, order.order)
+    router.get('/order', auth.verifyToken, order.transactionActive)
 
     app.use('/api/cart', router)
 }
